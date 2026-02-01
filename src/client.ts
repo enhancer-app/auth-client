@@ -13,8 +13,8 @@ import { sanitizeUrl } from './utils/validators.js';
  * @example
  * ```typescript
  * const client = new EnhancerAuthClient({
- *   authBackendUrl: 'http://localhost:8080',
- *   authFrontendUrl: 'https://auth.enhancer.at',
+ *   authBackendUrl: 'http://auth.enhancer.at',
+ *   authFrontendUrl: 'https://account.enhancer.at',
  *   serviceId: 'my-service',
  *   serviceSecret: 'secret_abc123',
  * });
