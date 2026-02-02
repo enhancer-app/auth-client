@@ -5,10 +5,10 @@ import { sanitizeUrl } from '../utils/validators.js';
  * Configuration for the Enhancer NextAuth/Auth.js provider
  */
 export interface EnhancerProviderConfig
-  extends Pick<
-    EnhancerAuthConfig,
-    'authBackendUrl' | 'authFrontendUrl' | 'serviceId' | 'serviceSecret'
-  > {
+    extends Pick<
+        EnhancerAuthConfig,
+        'authBackendUrl' | 'authFrontendUrl' | 'serviceId'
+    > {
   /**
    * Service secret for authentication.
    * Required only if you need to make service-to-service API calls.
