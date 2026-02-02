@@ -18,9 +18,11 @@ export interface EnhancerAuthConfig {
   serviceId: string;
 
   /**
-   * Your service secret for authentication
+   * Your service secret for authentication.
+   * Required for service-to-service API calls (e.g., getConnectedAccounts).
+   * OAuth flows work without this.
    */
-  serviceSecret: string;
+  serviceSecret?: string;
 
   /**
    * HTTP request timeout in milliseconds

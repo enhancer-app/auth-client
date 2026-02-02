@@ -16,7 +16,7 @@ import { sanitizeUrl } from './utils/validators.js';
  *   authBackendUrl: 'http://auth.enhancer.at',
  *   authFrontendUrl: 'https://account.enhancer.at',
  *   serviceId: 'my-service',
- *   serviceSecret: 'secret_abc123',
+ *   serviceSecret: 'secret_abc123', // Optional - only needed for service-to-service APIs
  * });
  *
  * // Redirect user to login
@@ -192,9 +192,11 @@ export class EnhancerAuthClient {
    * Get connected accounts for a user
    *
    * Requires service-to-service authentication using serviceId and serviceSecret.
+   * Will throw an error if serviceSecret was not provided in the configuration.
    *
    * @param accountId - Account UUID
    * @returns Array of connected accounts
+   * @throws {ServiceAuthError} If serviceSecret is not configured
    *
    * @example
    * ```typescript
@@ -205,6 +207,13 @@ export class EnhancerAuthClient {
    * ```
    */
   async getConnectedAccounts(accountId: string): Promise<ConnectedAccount[]> {
+    if (!this.config.serviceSecret) {
+      throw new Error(
+        'serviceSecret is required to call getConnectedAccounts(). ' +
+          'Please provide serviceSecret in your EnhancerAuthConfig when initializing the client.'
+      );
+    }
+
     const response = await this.httpClient.get<ConnectedAccount[]>(
       `/api/service/accounts/${accountId}/connected-accounts`,
       withBasicAuth(this.config.serviceId, this.config.serviceSecret)

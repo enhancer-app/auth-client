@@ -1,6 +1,6 @@
 {
   "name": "@enhancer/auth-client",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Node.js client library for Enhancer Auth Service",
   "type": "module",
   "main": "./dist/index.js",
@@ -28,11 +28,7 @@
       "types": "./dist/middleware/nextauth-provider.d.ts"
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
     "build": "bun run build.ts",
     "dev": "bun run build.ts --watch",
@@ -44,14 +40,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "bun run typecheck && bun run lint && bun run test && bun run build"
   },
-  "keywords": [
-    "auth",
-    "oauth2",
-    "jwt",
-    "authentication",
-    "enhancer",
-    "typescript"
-  ],
+  "keywords": ["auth", "oauth2", "jwt", "authentication", "enhancer", "typescript"],
   "author": "Enhancer",
   "license": "MIT",
   "engines": {

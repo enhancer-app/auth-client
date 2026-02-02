@@ -5,10 +5,17 @@ import { sanitizeUrl } from '../utils/validators.js';
  * Configuration for the Enhancer NextAuth/Auth.js provider
  */
 export interface EnhancerProviderConfig
-  extends Pick<
-    EnhancerAuthConfig,
-    'authBackendUrl' | 'authFrontendUrl' | 'serviceId' | 'serviceSecret'
-  > {}
+    extends Pick<
+        EnhancerAuthConfig,
+        'authBackendUrl' | 'authFrontendUrl' | 'serviceId'
+    > {
+  /**
+   * Service secret for authentication.
+   * Required only if you need to make service-to-service API calls.
+   * OAuth flows work without this.
+   */
+  serviceSecret?: string;
+}
 
 /**
  * Creates an Enhancer provider for NextAuth v5 (Auth.js)
@@ -28,7 +35,7 @@ export interface EnhancerProviderConfig
  *       authBackendUrl: process.env.AUTH_BACKEND_URL!,
  *       authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
  *       serviceId: process.env.SERVICE_ID!,
- *       serviceSecret: process.env.SERVICE_SECRET!,
+ *       serviceSecret: process.env.SERVICE_SECRET, // Optional
  *     }),
  *   ],
  * });

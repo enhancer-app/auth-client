@@ -24,6 +24,7 @@ bun install
 AUTH_BACKEND_URL=http://localhost:8080
 AUTH_FRONTEND_URL=https://auth.enhancer.at
 SERVICE_ID=your-service-id
+# Optional - only needed for service-to-service APIs like getConnectedAccounts()
 SERVICE_SECRET=your-service-secret
 ```
 

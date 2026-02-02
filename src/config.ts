@@ -23,7 +23,7 @@ const configSchema = z.object({
 
   serviceId: z.string().min(1, 'serviceId is required'),
 
-  serviceSecret: z.string().min(1, 'serviceSecret is required'),
+  serviceSecret: z.string().optional(),
 
   timeout: z.number().positive().optional().default(10000),
 
@@ -50,7 +50,7 @@ export type ValidatedConfig = z.infer<typeof configSchema>;
  *   authBackendUrl: 'http://localhost:8080',
  *   authFrontendUrl: 'https://auth.enhancer.at',
  *   serviceId: 'my-service',
- *   serviceSecret: 'secret_abc123',
+ *   serviceSecret: 'secret_abc123', // Optional - only needed for service-to-service APIs
  * });
  * ```
  */

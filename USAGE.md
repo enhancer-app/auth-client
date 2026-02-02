@@ -26,7 +26,7 @@ const client = new EnhancerAuthClient({
   authBackendUrl: 'https://api.enhancer.at',
   authFrontendUrl: 'https://auth.enhancer.at',
   serviceId: 'my-service',
-  serviceSecret: 'secret_abc123',
+  // serviceSecret: 'secret_abc123', // Optional - only needed for service-to-service APIs
 });
 
 // 1. Redirect user to login
@@ -58,8 +58,12 @@ interface EnhancerAuthConfig {
   /** Your registered service ID */
   serviceId: string;
 
-  /** Your service secret for authentication */
-  serviceSecret: string;
+  /** 
+   * Your service secret for authentication.
+   * Required for service-to-service API calls (e.g., getConnectedAccounts).
+   * OAuth flows work without this.
+   */
+  serviceSecret?: string;
 
   /** HTTP request timeout in milliseconds (default: 10000) */
   timeout?: number;
@@ -535,7 +539,12 @@ interface EnhancerProviderConfig {
   authBackendUrl: string;
   authFrontendUrl: string;
   serviceId: string;
-  serviceSecret: string;
+  /** 
+   * Service secret for authentication.
+   * Required only if you need to make service-to-service API calls.
+   * OAuth flows work without this.
+   */
+  serviceSecret?: string;
 }
 ```
 
@@ -551,7 +560,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       authBackendUrl: process.env.AUTH_BACKEND_URL!,
       authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
       serviceId: process.env.SERVICE_ID!,
-      serviceSecret: process.env.SERVICE_SECRET!,
+      serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
     }),
   ],
 });
@@ -578,7 +587,7 @@ const authClient = new EnhancerAuthClient({
   authBackendUrl: process.env.AUTH_BACKEND_URL!,
   authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
   serviceId: process.env.SERVICE_ID!,
-  serviceSecret: process.env.SERVICE_SECRET!,
+  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
   enableDebugLogs: true,
 });
 
@@ -676,7 +685,7 @@ const authClient = new EnhancerAuthClient({
   authBackendUrl: process.env.AUTH_BACKEND_URL!,
   authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
   serviceId: process.env.SERVICE_ID!,
-  serviceSecret: process.env.SERVICE_SECRET!,
+  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
 });
 
 // Register plugins
@@ -806,9 +815,9 @@ async function getValidToken(req, res): Promise<string | null> {
 AUTH_BACKEND_URL=https://api.enhancer.at
 AUTH_FRONTEND_URL=https://auth.enhancer.at
 SERVICE_ID=your-service-id
-SERVICE_SECRET=your-service-secret
 
 # Optional
+SERVICE_SECRET=your-service-secret  # Required for service-to-service APIs like getConnectedAccounts()
 SESSION_SECRET=your-session-secret
 NODE_ENV=production
 ```
