@@ -43,7 +43,7 @@ const authClient = new EnhancerAuthClient({
   authBackendUrl: 'http://localhost:8080',
   authFrontendUrl: 'https://auth.enhancer.at',
   serviceId: 'your-service-id',
-  serviceSecret: 'your-service-secret',
+  // serviceSecret: 'your-service-secret', // Optional - only needed for service-to-service APIs
 });
 
 // Redirect user to login
@@ -85,7 +85,7 @@ console.log('User:', decoded.username);
 | `authBackendUrl` | `string` | ✅ | - | Backend API base URL (e.g., `http://localhost:8080`) |
 | `authFrontendUrl` | `string` | ✅ | - | Frontend base URL for login redirects (e.g., `https://auth.enhancer.at`) |
 | `serviceId` | `string` | ✅ | - | Your registered service ID |
-| `serviceSecret` | `string` | ✅ | - | Your service secret for authentication |
+| `serviceSecret` | `string` | ❌ | - | Your service secret for authentication. **Required for service-to-service APIs** like `getConnectedAccounts()`. OAuth flows work without it. |
 | `timeout` | `number` | ❌ | `10000` | HTTP request timeout in milliseconds |
 | `publicKeyCacheTTL` | `number` | ❌ | `Infinity` | Public key cache TTL in milliseconds |
 | `enableDebugLogs` | `boolean` | ❌ | `false` | Enable debug logging |
@@ -95,7 +95,7 @@ const client = new EnhancerAuthClient({
   authBackendUrl: process.env.AUTH_BACKEND_URL!,
   authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
   serviceId: process.env.SERVICE_ID!,
-  serviceSecret: process.env.SERVICE_SECRET!,
+  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
   timeout: 5000,
   enableDebugLogs: true,
 });
@@ -305,7 +305,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       authBackendUrl: process.env.AUTH_BACKEND_URL!,
       authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
       serviceId: process.env.SERVICE_ID!,
-      serviceSecret: process.env.SERVICE_SECRET!,
+  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
     }),
   ],
 });
@@ -403,7 +403,7 @@ const client = new EnhancerAuthClient({
   authBackendUrl: 'https://api.enhancer.at',    // HTTPS!
   authFrontendUrl: 'https://auth.enhancer.at',  // HTTPS!
   serviceId: process.env.SERVICE_ID!,
-  serviceSecret: process.env.SERVICE_SECRET!,
+  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
 });
 ```
 
@@ -442,7 +442,7 @@ SERVICE_SECRET=secret_abc123
 ```typescript
 // Use environment variables
 const client = new EnhancerAuthClient({
-  serviceSecret: process.env.SERVICE_SECRET!,
+  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
   // ...
 });
 ```

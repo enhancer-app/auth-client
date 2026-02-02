@@ -112,6 +112,10 @@ export function createBasicAuthHeader(serviceId: string, serviceSecret: string):
 
 /**
  * Adds Basic Auth to request config
+ * @param serviceId - Your registered service ID
+ * @param serviceSecret - Your service secret for authentication (required)
+ * @param config - Optional additional Axios request config
+ * @returns Axios request config with Basic Auth header
  */
 export function withBasicAuth(
   serviceId: string,

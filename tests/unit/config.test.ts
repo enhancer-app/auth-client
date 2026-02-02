@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import { validateConfig } from '../../src/config.js';
 import type { EnhancerAuthConfig } from '../../src/types/config.js';
 
@@ -50,9 +50,7 @@ describe('Config Validation', () => {
     });
 
     test('should throw on invalid authBackendUrl', () => {
-      expect(() =>
-        validateConfig({ ...validConfig, authBackendUrl: 'not-a-url' })
-      ).toThrow();
+      expect(() => validateConfig({ ...validConfig, authBackendUrl: 'not-a-url' })).toThrow();
     });
 
     test('should throw on non-http authBackendUrl', () => {
@@ -74,10 +72,19 @@ describe('Config Validation', () => {
       expect(() => validateConfig({ ...validConfig, serviceId: '' })).toThrow(/serviceId/i);
     });
 
-    test('should throw on empty serviceSecret', () => {
-      expect(() => validateConfig({ ...validConfig, serviceSecret: '' })).toThrow(
-        /serviceSecret/i
-      );
+    test('should accept empty serviceSecret', () => {
+      // serviceSecret is optional - empty string should be allowed
+      const result = validateConfig({ ...validConfig, serviceSecret: '' });
+      expect(result.serviceSecret).toBe('');
+    });
+
+    test('should accept missing serviceSecret', () => {
+      // serviceSecret is optional - should work without it
+      const config = { ...validConfig };
+      delete (config as Partial<EnhancerAuthConfig>).serviceSecret;
+
+      const result = validateConfig(config as EnhancerAuthConfig);
+      expect(result.serviceSecret).toBeUndefined();
     });
   });
 });
