@@ -28,7 +28,11 @@
       "types": "./dist/middleware/nextauth-provider.d.ts"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "bun run build.ts",
     "dev": "bun run build.ts --watch",
@@ -38,9 +42,17 @@
     "lint:fix": "biome check --write ./src",
     "format": "biome format --write ./src",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run typecheck && bun run lint && bun run test && bun run build"
+    "prepublishOnly": "bun run typecheck && bun run lint && bun run test && bun run build",
+    "prepare": "husky"
   },
-  "keywords": ["auth", "oauth2", "jwt", "authentication", "enhancer", "typescript"],
+  "keywords": [
+    "auth",
+    "oauth2",
+    "jwt",
+    "authentication",
+    "enhancer",
+    "typescript"
+  ],
   "author": "Enhancer",
   "license": "MIT",
   "engines": {
@@ -57,7 +69,9 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^25.2.0",
-    "fastify": "^4.26.0"
+    "fastify": "^4.26.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
   },
   "peerDependencies": {
     "express": "^4.18.0",
@@ -74,5 +88,10 @@
     "next-auth": {
       "optional": true
     }
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts,mjs,cjs}": [
+      "biome check --write"
+    ]
   }
 }
