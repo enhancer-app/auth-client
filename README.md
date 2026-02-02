@@ -305,7 +305,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       authBackendUrl: process.env.AUTH_BACKEND_URL!,
       authFrontendUrl: process.env.AUTH_FRONTEND_URL!,
       serviceId: process.env.SERVICE_ID!,
-  serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
+      serviceSecret: process.env.SERVICE_SECRET, // Optional - only needed for service-to-service APIs
     }),
   ],
 });
