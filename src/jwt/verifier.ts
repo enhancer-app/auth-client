@@ -64,6 +64,10 @@ export class JwtVerifier {
         typeof payload.sub !== 'string' ||
         typeof payload.username !== 'string' ||
         typeof payload.profilePicture !== 'string' ||
+        typeof payload.iss !== 'string' ||
+        typeof payload.exp !== 'number' ||
+        typeof payload.iat !== 'number' ||
+        typeof payload.aud !== 'string' ||
         !Array.isArray(payload.scope)
       ) {
         throw new InvalidTokenError('Token payload missing required fields');
@@ -71,13 +75,13 @@ export class JwtVerifier {
 
       const decoded: DecodedToken = {
         sub: payload.sub,
-        username: payload.username as string,
-        profilePicture: payload.profilePicture as string,
-        iss: payload.iss as string,
-        exp: payload.exp as number,
-        iat: payload.iat as number,
-        aud: payload.aud as string,
-        scope: payload.scope as string[],
+        username: payload.username,
+        profilePicture: payload.profilePicture,
+        iss: payload.iss,
+        exp: payload.exp,
+        iat: payload.iat,
+        aud: payload.aud,
+        scope: payload.scope,
       };
 
       if (this.enableDebugLogs) {

@@ -1,1 +1,4 @@
+# Pre-commit hook temporarily disabled for CI compatibility
+# This allows the build to run in environments without Bun
+# In local development, developers can re-enable by running: npx lint-staged
 exit 0
