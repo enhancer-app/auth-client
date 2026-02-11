@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 import { InvalidTokenError, TokenExpiredError } from '../errors/index.js';
 import type { DecodedToken } from '../types/tokens.js';
 import { isValidJWTFormat } from '../utils/validators.js';
@@ -50,12 +50,35 @@ export class JwtVerifier {
         console.log('[JwtVerifier] Verifying token');
       }
 
+      // Import the public key for jose
+      const cryptoKey = await jose.importSPKI(publicKey, 'RS256');
+
       // Verify the token
-      const decoded = jwt.verify(token, publicKey, {
+      const { payload } = await jose.jwtVerify(token, cryptoKey, {
         algorithms: ['RS256'],
         audience: this.serviceId,
-        complete: false,
-      }) as DecodedToken;
+      });
+
+      // Validate required custom fields
+      if (
+        typeof payload.sub !== 'string' ||
+        typeof payload.username !== 'string' ||
+        typeof payload.profilePicture !== 'string' ||
+        !Array.isArray(payload.scope)
+      ) {
+        throw new InvalidTokenError('Token payload missing required fields');
+      }
+
+      const decoded: DecodedToken = {
+        sub: payload.sub,
+        username: payload.username as string,
+        profilePicture: payload.profilePicture as string,
+        iss: payload.iss as string,
+        exp: payload.exp as number,
+        iat: payload.iat as number,
+        aud: payload.aud as string,
+        scope: payload.scope as string[],
+      };
 
       if (this.enableDebugLogs) {
         console.log('[JwtVerifier] Token verified successfully', {
@@ -67,21 +90,26 @@ export class JwtVerifier {
 
       return decoded;
     } catch (error) {
-      if (error instanceof jwt.TokenExpiredError) {
+      if (error instanceof jose.errors.JWTExpired) {
         throw new TokenExpiredError('Token has expired');
       }
 
-      if (error instanceof jwt.JsonWebTokenError) {
-        // Handle specific JWT errors
+      if (error instanceof jose.errors.JWTClaimValidationFailed) {
+        // Handle specific JWT claim validation errors
         if (error.message.includes('audience')) {
           throw new InvalidTokenError(`Token audience mismatch (expected: ${this.serviceId})`);
         }
         if (error.message.includes('issuer')) {
           throw new InvalidTokenError('Token issuer mismatch');
         }
-        if (error.message.includes('signature')) {
-          throw new InvalidTokenError('Invalid token signature');
-        }
+        throw new InvalidTokenError(`Token claim validation failed: ${error.message}`);
+      }
+
+      if (error instanceof jose.errors.JWSSignatureVerificationFailed) {
+        throw new InvalidTokenError('Invalid token signature');
+      }
+
+      if (error instanceof jose.errors.JOSEError) {
         throw new InvalidTokenError(`Token verification failed: ${error.message}`);
       }
 

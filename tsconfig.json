@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    // Target modern JavaScript for Node.js 18+
+    // Target modern JavaScript for Node.js 18+ and browsers
     "target": "ES2022",
     "module": "ESNext",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     
     // Module resolution
     "moduleResolution": "bundler",
