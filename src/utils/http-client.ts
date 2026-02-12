@@ -7,6 +7,7 @@ import {
   RateLimitError,
   ServiceAuthError,
 } from '../errors';
+import { encodeBase64 } from './base64.js';
 
 /**
  * Creates a configured axios instance with error handling
@@ -106,7 +107,7 @@ function transformAxiosError(error: AxiosError): AuthError {
  */
 export function createBasicAuthHeader(serviceId: string, serviceSecret: string): string {
   const credentials = `${serviceId}:${serviceSecret}`;
-  const encoded = Buffer.from(credentials).toString('base64');
+  const encoded = encodeBase64(credentials);
   return `Basic ${encoded}`;
 }
 

@@ -1,19 +1,19 @@
 # @enhancer/auth-client
 
-Official Node.js client library for the Enhancer Auth Service. Provides OAuth 2.0 authentication, JWT verification, and middleware integrations for Express, Fastify, and NextAuth.
+Universal authentication client library for the Enhancer Auth Service. Provides OAuth 2.0 authentication, JWT verification, and middleware integrations for Express, Fastify, and NextAuth. **Works in both Node.js and browsers.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
-[![Bun](https://img.shields.io/badge/Bun-1.3-orange)](https://bun.sh/)
 
 ## Features
 
 - 🔐 **OAuth 2.0 Flow** - Complete authorization code flow implementation
-- 🎫 **JWT Verification** - RS256 signature verification with public key caching
+- 🎫 **JWT Verification** - RS256 signature verification with public key caching using Web Crypto API
 - 🔄 **Token Refresh** - Automatic access token renewal
 - 🛡️ **Middleware** - Ready-to-use middleware for Express, Fastify, and NextAuth v5
 - 🎯 **Scope Validation** - Built-in permission checking
-- 📦 **Dual Package** - CommonJS and ESM support
+- 📦 **Universal Package** - Works in Node.js (CommonJS & ESM) and browsers
+- 🌐 **Browser Compatible** - Uses Web standards (Web Crypto API, btoa/atob) for browser support
 - 🔍 **TypeScript** - Full type definitions included
 - ⚡ **Performance** - Minimal dependencies, optimized for speed
 
@@ -60,6 +60,7 @@ console.log('User:', decoded.username);
 
 ## Table of Contents
 
+- [Browser Usage](#browser-usage)
 - [Configuration](#configuration)
 - [Core API](#core-api)
   - [OAuth Flow](#oauth-flow)
@@ -75,6 +76,41 @@ console.log('User:', decoded.username);
 - [Security Best Practices](#security-best-practices)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Browser Usage
+
+This library is fully compatible with modern browsers! It uses Web standards like the Web Crypto API and native base64 encoding.
+
+### Installation in Browser Projects
+
+```bash
+npm install @enhancer/auth-client
+```
+
+### Using in Browser (ES Modules)
+
+```typescript
+import { EnhancerAuthClient } from '@enhancer/auth-client';
+
+const authClient = new EnhancerAuthClient({
+  authBackendUrl: 'https://api.enhancer.at',
+  authFrontendUrl: 'https://auth.enhancer.at',
+  serviceId: 'your-service-id',
+});
+
+// Verify JWT tokens in the browser
+const decoded = await authClient.verifyToken(accessToken);
+console.log('User:', decoded.username);
+```
+
+### Browser Features
+
+- ✅ **JWT Verification** - Uses Web Crypto API for RS256 signature verification
+- ✅ **Base64 Encoding** - Uses native `btoa`/`atob` functions
+- ✅ **HTTP Client** - Axios works in browsers
+- ⚠️ **Middleware** - Express/Fastify/NextAuth middleware are server-side only
+
+**Note:** The middleware functions (Express, Fastify, NextAuth) are designed for server-side use. For browser applications, use the core client methods like `verifyToken()` and `exchangeCode()`.
 
 ## Configuration
 
