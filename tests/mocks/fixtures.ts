@@ -1,5 +1,5 @@
 import { generateKeyPairSync } from 'crypto';
-import jwt from 'jsonwebtoken';
+import * as jose from 'jose';
 import type { DecodedToken, TokenResponse, ConnectedAccount } from '../../src/types/index.js';
 
 /**
@@ -25,10 +25,10 @@ export const testKeyPair = generateTestKeyPair();
 /**
  * Create a test JWT token
  */
-export function createTestToken(
+export async function createTestToken(
   payload: Partial<DecodedToken>,
   options: { privateKey?: string } = {}
-): string {
+): Promise<string> {
   const defaultPayload: Omit<DecodedToken, 'exp' | 'iat'> = {
     sub: '550e8400-e29b-41d4-a716-446655440000',
     username: 'testuser',
@@ -39,16 +39,22 @@ export function createTestToken(
     ...payload,
   };
 
-  return jwt.sign(defaultPayload, options.privateKey || testKeyPair.privateKey, {
-    algorithm: 'RS256',
-    expiresIn: '1h',
-  });
+  const privateKey = await jose.importPKCS8(
+    options.privateKey || testKeyPair.privateKey,
+    'RS256'
+  );
+
+  return new jose.SignJWT(defaultPayload as Record<string, unknown>)
+    .setProtectedHeader({ alg: 'RS256' })
+    .setIssuedAt()
+    .setExpirationTime('1h')
+    .sign(privateKey);
 }
 
 /**
  * Create an expired test token
  */
-export function createExpiredToken(payload?: Partial<DecodedToken>): string {
+export async function createExpiredToken(payload?: Partial<DecodedToken>): Promise<string> {
   const defaultPayload: DecodedToken = {
     sub: '550e8400-e29b-41d4-a716-446655440000',
     username: 'testuser',
@@ -61,21 +67,24 @@ export function createExpiredToken(payload?: Partial<DecodedToken>): string {
     ...payload,
   };
 
-  return jwt.sign(defaultPayload, testKeyPair.privateKey, {
-    algorithm: 'RS256',
-    noTimestamp: true, // Don't override our custom exp/iat
-  });
+  const privateKey = await jose.importPKCS8(testKeyPair.privateKey, 'RS256');
+
+  return new jose.SignJWT(defaultPayload as Record<string, unknown>)
+    .setProtectedHeader({ alg: 'RS256' })
+    .sign(privateKey);
 }
 
 /**
- * Mock token response
+ * Create mock token response
  */
-export const mockTokenResponse: TokenResponse = {
-  accessToken: createTestToken({}),
-  refreshToken: 'refresh_token_abc123',
-  expiresIn: 3600,
-  tokenType: 'Bearer',
-};
+export async function createMockTokenResponse(): Promise<TokenResponse> {
+  return {
+    accessToken: await createTestToken({}),
+    refreshToken: 'refresh_token_abc123',
+    expiresIn: 3600,
+    tokenType: 'Bearer',
+  };
+}
 
 /**
  * Mock connected accounts

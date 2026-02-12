@@ -31,7 +31,7 @@ beforeAll(() => {
           return Response.json({ message: 'Missing required fields' }, { status: 400 });
         }
 
-        const accessToken = createTestToken({ aud: serviceId });
+        const accessToken = await createTestToken({ aud: serviceId });
 
         return Response.json({
           accessToken,
@@ -50,7 +50,7 @@ beforeAll(() => {
           return Response.json({ message: 'Missing refresh token' }, { status: 400 });
         }
 
-        const accessToken = createTestToken({});
+        const accessToken = await createTestToken({});
         return Response.json({
           accessToken,
           refreshToken: 'new_refresh_token_xyz789',
@@ -128,7 +128,7 @@ describe('EnhancerAuthClient Integration', () => {
 
   describe('JWT Verification', () => {
     test('verifyToken should decode valid token', async () => {
-      const token = createTestToken({ aud: 'test-service' });
+      const token = await createTestToken({ aud: 'test-service' });
       const decoded = await client.verifyToken(token);
 
       expect(decoded.sub).toBe('550e8400-e29b-41d4-a716-446655440000');
@@ -138,7 +138,7 @@ describe('EnhancerAuthClient Integration', () => {
     });
 
     test('verifyToken should throw on expired token', async () => {
-      const token = createExpiredToken({ aud: 'test-service' });
+      const token = await createExpiredToken({ aud: 'test-service' });
 
       await expect(client.verifyToken(token)).rejects.toThrow(TokenExpiredError);
     });
@@ -148,7 +148,7 @@ describe('EnhancerAuthClient Integration', () => {
     });
 
     test('verifyToken should throw on audience mismatch', async () => {
-      const token = createTestToken({ aud: 'wrong-service' });
+      const token = await createTestToken({ aud: 'wrong-service' });
 
       await expect(client.verifyToken(token)).rejects.toThrow(InvalidTokenError);
     });
